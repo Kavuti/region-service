@@ -1,0 +1,1 @@
+CREATE DATABASE regions_db;

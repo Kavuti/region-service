@@ -9,10 +9,12 @@ file_dir = os.path.split(os.path.realpath(__file__))[0]
 logging.config.fileConfig(os.path.join(file_dir, 'logging.ini'), disable_existing_loggers=False)
 
 db = SQLAlchemy()
+logger = logging.getLogger('root')
 
 from .routes import regions
 
 def create_app(testing=False):
+    logger.info(f"Creating app with testing {testing}")
     app = Flask(__name__)
 
     env = os.getenv('ENVIRONMENT')
