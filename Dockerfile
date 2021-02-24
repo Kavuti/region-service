@@ -8,9 +8,7 @@ COPY ./requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
 FROM python-requirements
+ENV FLASK_APP=region_service
 COPY / /app
 WORKDIR /app
-RUN pip install -r requirements.txt
-ENV FLASK_APP=region_service
-
 ENTRYPOINT [ "gunicorn", "-w 4", "--bind=0.0.0.0", "wsgi:app" ]
