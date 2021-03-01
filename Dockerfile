@@ -1,4 +1,4 @@
-FROM python:3.9.1-alpine3.12 as python-alpine
+FROM python:3.9.2-alpine3.12 as python-alpine
 RUN apk update && \
     apk add postgresql-dev gcc python3-dev musl-dev
 
@@ -11,4 +11,4 @@ FROM python-requirements
 ENV FLASK_APP=region_service
 COPY / /app
 WORKDIR /app
-ENTRYPOINT [ "gunicorn", "-w 4", "--bind=0.0.0.0", "wsgi:app" ]
+CMD [ "gunicorn", "-w 4", "--bind=0.0.0.0", "wsgi:app" ]

@@ -8,7 +8,7 @@ class Region(db.Model):
 class RegionSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Region
-        load_instance = True
+        load_instance = False
 
     # @post_load
     # def create_object(self, data, **kwargs):

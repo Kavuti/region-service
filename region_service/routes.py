@@ -23,7 +23,6 @@ def add_region():
         }), 400
     
     try:
-        json_request['id'] = 0
         logger.info(json_request)
         schema = RegionSchema()
         new_region = schema.load(json_request, transient=True)

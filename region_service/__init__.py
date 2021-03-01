@@ -7,7 +7,8 @@ import logging.config
 from pathlib import Path
 
 file_dir = os.path.split(os.path.realpath(__file__))[0]
-logging.config.fileConfig(os.path.join(file_dir, 'logging.ini'), disable_existing_loggers=False)
+print(type(os.getenv('LOGGING_DIR')))
+logging.config.fileConfig(os.path.join(file_dir, 'logging.ini'), disable_existing_loggers=False, defaults={'logdirectory': os.getenv('LOGGING_DIR')})
 
 db = SQLAlchemy()
 ma = Marshmallow()
@@ -38,3 +39,6 @@ def create_app(testing=False):
 
     return app
 
+if __name__ == '__main__':
+    app = create_app(True)
+    app.run(host="0.0.0.0", port=8000, debug=True)

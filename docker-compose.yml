@@ -7,6 +7,9 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: on-failure
+    command: python wsgi.py
+    volumes:
+      - ./:/app
     env_file:
       - ./.env
     ports:
