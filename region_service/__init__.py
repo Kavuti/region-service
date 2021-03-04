@@ -1,26 +1,26 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
+from flask_restful import Api
 from .config import Config, TestConfig
 import logging.config
 from pathlib import Path
 
 file_dir = os.path.split(os.path.realpath(__file__))[0]
-print(type(os.getenv('LOGGING_DIR')))
 logging.config.fileConfig(os.path.join(file_dir, 'logging.ini'), disable_existing_loggers=False, defaults={'logdirectory': os.getenv('LOGGING_DIR')})
 
 db = SQLAlchemy()
-ma = Marshmallow()
+api = Api()
 
 logger = logging.getLogger('root')
 
-from .routes import regions
+from .routes import RegionResource
 
 def create_app(testing=False):
     logger.info(f"Creating app with testing {testing}")
     app = Flask(__name__)
 
+    # Config
     env = os.getenv('ENVIRONMENT')
     if testing:
         app.config.from_object(TestConfig())
@@ -29,15 +29,34 @@ def create_app(testing=False):
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    app.register_blueprint(regions)
+    # Resoures
+    api.add_resource(RegionResource, '/')
 
+    # Init
     db.init_app(app)
-    ma.init_app(app)
+    api.init_app(app)
+
 
     with app.app_context():
         db.create_all()
+    
+    @app.teardown_request
+    def teardown_request(exception):
+        if exception:
+            db.session.rollback()
+        db.session.remove()
+
+    @app.errorhandler(500)
+    def on_error(error):
+        return jsonify({
+            'status': 'error',
+            'message': 'Internal error'
+        }), 500
 
     return app
+
+    
+
 
 if __name__ == '__main__':
     app = create_app(True)

@@ -1,11 +1,31 @@
 from flask import Blueprint, jsonify, request
-from .model.region import Region, RegionSchema
+from flask_restful import Resource
+from .model.region import Region, region_args
+from webargs.flaskparser import use_kwargs
+from .utils import *
 from flask import request
 from . import db
 import logging
 
 regions = Blueprint('regions', __name__)
 logger = logging.getLogger()
+
+
+class RegionResource(Resource):
+    @use_kwargs(region_args, location="query")
+    def get(self, **kwargs):
+        query = Region.query
+        if 'id' in kwargs:
+            region = query.get(kwargs['id'])
+            return success(region.to_dict())
+        elif 'description' in kwargs:
+            regions = query.filter(Region.description.ilike(f"%{kwargs['description']}%")).all()
+            return success(regions)
+        return success(query.all())
+        
+
+
+"""
 
 @regions.route('/')
 def get_regions():
@@ -39,5 +59,5 @@ def add_region():
             'status': 'error',
             'message': 'Error saving a new region'
         }), 500
-    
-    
+"""
+
