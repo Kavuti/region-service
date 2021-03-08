@@ -10,14 +10,15 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    
+    runs-on: ubuntu-latest 
     steps:
       - name: Setup Python
         uses: actions/setup-python@v2.2.1
         with:
           python-version: 3.9.2
           architecture: x64
+      - name: Checkout the code
+        uses: actions/checkout@v2.3.4
       - name: Install workspace
         run: pip install requirements.txt
       - name: Execute tests
