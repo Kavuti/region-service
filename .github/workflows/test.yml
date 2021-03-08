@@ -1,0 +1,24 @@
+name: Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2.2.1
+        with:
+          python-version: 3.9.2
+          architecture: x64
+      - name: Install workspace
+        run: pip install requirements.txt
+      - name: Execute tests
+        run: cd region_service/tests && pytest
