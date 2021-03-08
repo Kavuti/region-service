@@ -1,27 +1,25 @@
 import os
+import logging
 from flask import Flask, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
+from flask_marshmallow import Marshmallow
 from .config import Config, TestConfig
-import logging.config
-from pathlib import Path
-
-file_dir = os.path.split(os.path.realpath(__file__))[0]
-logging.config.fileConfig(os.path.join(file_dir, 'logging.ini'), disable_existing_loggers=False, defaults={'logdirectory': os.getenv('LOGGING_DIR')})
 
 db = SQLAlchemy()
 api = Api()
+ma = Marshmallow()
 
 logger = logging.getLogger('root')
 
 from .routes import RegionResource
 
 def create_app(testing=False):
+
     logger.info(f"Creating app with testing {testing}")
     app = Flask(__name__)
 
     # Config
-    env = os.getenv('ENVIRONMENT')
     if testing:
         app.config.from_object(TestConfig())
     else:
@@ -30,11 +28,12 @@ def create_app(testing=False):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Resoures
-    api.add_resource(RegionResource, '/')
+    api.add_resource(RegionResource, '/regions')
 
     # Init
     db.init_app(app)
     api.init_app(app)
+    ma.init_app(app)
 
 
     with app.app_context():
@@ -52,6 +51,13 @@ def create_app(testing=False):
             'status': 'error',
             'message': 'Internal error'
         }), 500
+    
+    @app.errorhandler(400)
+    def on_fail(fail):
+        return jsonify({
+            'status': 'fail',
+            'message': fail
+        }), 400
 
     return app
 

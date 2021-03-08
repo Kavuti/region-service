@@ -1,11 +1,14 @@
 import os
+import logging.config
 
 class Config:
     TESTING = False
-    DATABASE_URI = os.getenv('DATABASE_URI')
-    SQLALCHEMY_DATABASE_URI = DATABASE_URI
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')
 
-class TestConfig(Config):
+    def __init__(self):
+        file_dir = os.path.split(os.path.realpath(__file__))[0]
+        logging.config.fileConfig(os.path.join(file_dir, 'logging.ini'), disable_existing_loggers=False, defaults={'logdirectory': os.getenv('LOGGING_DIR')})
+
+class TestConfig():
     TESTING = True
-    DATABASE_URI = 'sqlite://'
-    SQLALCHEMY_DATABASE_URI = DATABASE_URI
+    SQLALCHEMY_DATABASE_URI = 'sqlite://'

@@ -11,3 +11,9 @@ def error(message):
         'status': 'error',
         'message': message
     }), 500
+
+def fail(data):
+    return jsonify({
+        'status': 'fail',
+        'failures': data
+    }), 400
