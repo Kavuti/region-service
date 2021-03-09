@@ -5,20 +5,16 @@ from webargs import fields, ValidationError
 
 class Region(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    description = db.Column(db.String(30), nullable=False)
+    description = db.Column(db.String(30), nullable=False, unique=True)
 
 
 class RegionSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Region
         dump_only = ("id",)
-
-    @post_load
-    def to_region(self, data, **kwargs):
-        return Region(**data)
-
+        load_instance = True
 
 region_args = {
-    "id": fields.Int(validate=lambda val: val >= 0),
+    "id": fields.Int(),
     "description": fields.Str()
 }

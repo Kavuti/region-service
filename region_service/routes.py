@@ -3,11 +3,14 @@ from flask_restful import Resource
 from .model.region import RegionSchema, region_args
 from .workers.region_worker import RegionWorker
 from webargs.flaskparser import use_kwargs, use_args
+from webargs import fields
 from .utils import *
 from flask import request
 from . import db
 from marshmallow import ValidationError
-import traceback
+import logging
+
+logger = logging.getLogger('root')
 
 class RegionResource(Resource):
 
@@ -15,13 +18,38 @@ class RegionResource(Resource):
     def get(self, **kwargs):
         worker = RegionWorker()
         return make_response(success(worker.get(**kwargs)))
+
     
     @use_args(RegionSchema(), location="json")
     def post(self, *args):
         try:
             worker = RegionWorker()
             return make_response(success(worker.post(args[0])))
-        except ValidationError as err:
+        except ValidationError as e:
             raise e
-        # except Exception as e:
-        #     return make_response(error("Error creating region"))
+        except Exception as e:
+            logger.error("Error during creation", e)
+            raise e
+
+    @use_args({'id': fields.Int(required=True)}, location="query")
+    @use_args(RegionSchema(), location="json")
+    def put(self, id, *args):
+        try:
+            worker = RegionWorker()
+            return make_response(success(worker.put(id, args[0])))
+        except ValidationError as e:
+            raise e
+        except Exception as err:
+            logger.error("Error during update", err)
+            raise err
+
+    @use_args({'id': fields.Int(required=True)}, location="query")
+    def delete(self, id):
+        try:
+            worker = RegionWorker()
+            return make_response(success(worker.delete(id)))
+        except Exception as err:
+            logger.error("Error during deletion of region {id}", err)
+            raise err
+        
+

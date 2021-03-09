@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 from flask_marshmallow import Marshmallow
 from .config import Config, TestConfig
+from marshmallow import ValidationError
+from .utils import *
 
 db = SQLAlchemy()
 api = Api()
@@ -45,19 +47,16 @@ def create_app(testing=False):
             db.session.rollback()
         db.session.remove()
 
-    @app.errorhandler(500)
-    def on_error(error):
-        return jsonify({
-            'status': 'error',
-            'message': 'Internal error'
-        }), 500
-    
-    @app.errorhandler(400)
-    def on_fail(fail):
-        return jsonify({
-            'status': 'fail',
-            'message': fail
-        }), 400
+    @app.errorhandler(ValidationError)
+    def handle_validation_error(e):
+        logger.error("Error during entity validation", e)
+        return make_response(fail(e.messages))
+
+
+    @app.errorhandler(422)
+    def handle_validation_error(e):
+        logger.error("Error during entity processing", e)
+        return make_response(fail("Some data is not valid"))
 
     return app
 

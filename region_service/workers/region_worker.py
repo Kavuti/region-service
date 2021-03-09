@@ -25,10 +25,35 @@ class RegionWorker:
             db.session.add(region)
             db.session.commit()
             return schema.dump(region)
-        except ValidationError as error:
-            logger.info(f"Invalid region received: {error.messages}")
-            return error.messages
-        except Exception as e:
-            logger.error(f"Error saving new region {region}", e)
-            db.session.rollback()
+        except ValidationError as e:
             raise e
+        except Exception as ex:
+            db.session.rollback()
+            raise ex
+
+    def put(self, id, region):
+        try:
+            schema = RegionSchema()
+            logger.info(region)
+            persistent_region = Region.query.get(id)
+            if not persistent_region:
+                raise ValidationError("The given id does not correspond to a region")
+            persistent_region.description = region.description
+            db.session.commit()
+            return schema.dump(persistent_region)
+        except ValidationError as e:
+            raise e
+        except Exception as ex:
+            db.session.rollback()
+            raise ex
+
+    def delete(self, id):
+        try:
+            persistent_region = Region.query.get(id)
+            if not persistent_region:
+                raise ValidationError("The given id does not correspond to a region")
+            db.session.delete(persistent_region)
+            db.session.commit()
+        except Exception as ex:
+            db.session.rollback()
+            raise ex
