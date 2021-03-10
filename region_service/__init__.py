@@ -4,6 +4,7 @@ from flask import Flask, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 from flask_marshmallow import Marshmallow
+from flask_migrate import Migrate
 from .config import Config, TestConfig
 from marshmallow import ValidationError
 from .utils import *
@@ -11,6 +12,7 @@ from .utils import *
 db = SQLAlchemy()
 api = Api()
 ma = Marshmallow()
+migrate = Migrate(db=db)
 
 logger = logging.getLogger('root')
 
@@ -36,7 +38,7 @@ def create_app(testing=False):
     db.init_app(app)
     api.init_app(app)
     ma.init_app(app)
-
+    migrate.init_app(app)
 
     with app.app_context():
         db.create_all()

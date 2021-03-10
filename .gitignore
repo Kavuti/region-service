@@ -6,7 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# My ignores
 .vscode
+.logs
 
 # Distribution / packaging
 .Python

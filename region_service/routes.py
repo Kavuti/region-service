@@ -47,7 +47,8 @@ class RegionResource(Resource):
     def delete(self, id):
         try:
             worker = RegionWorker()
-            return make_response(success(worker.delete(id)))
+            worker.delete(id)
+            return make_response(success(True))
         except Exception as err:
             logger.error("Error during deletion of region {id}", err)
             raise err

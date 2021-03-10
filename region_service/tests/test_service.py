@@ -34,7 +34,7 @@ def client(app):
     _client = app.test_client()
     return _client
     
-@pytest.fixture
+@pytest.fixture(scope="session")
 def fake_region(test_db):
     _fake_region = Region()
     _fake_region.description = 'Northern Fake'
@@ -59,9 +59,35 @@ def test_get_region(client, fake_region):
     
 def test_create_region(client):
     valid_region = {'description': 'New Fake Region'}
-    res =client.post("/regions", json=valid_region)
+    res = client.post("/regions", json=valid_region)
     assert res.status_code == 200
     assert res.headers['Content-Type'] == 'application/json'
     assert type(res.json['data']) == dict
     assert res.json['data']['id'] != None
     assert res.json['data']['description'] == valid_region['description']
+    assert res.json['data']['active'] == True
+
+
+def test_update_region(client, fake_region):
+    update_payload = {'description': 'Updated Fake'}
+    res = client.put(f"/regions?id={fake_region.id}", data=update_payload)
+    assert res.status_code == 200
+    assert res.headers['Content-Type'] == 'application/json'
+    assert type(res.json['data']) == dict
+    assert res.json['data']['id'] == fake_region.id
+    assert res.json['data']['description'] == update_payload['description']
+
+
+def test_delete_region(client, fake_region):
+    res = client.delete(f"/regions?id={fake_region.id}")
+    assert res.status_code == 200
+    assert res.headers['Content-Type'] == 'application/json'
+    assert type(res.json['data']) == bool
+    assert res.json['data'] == True
+    
+    get_res = client.get(f"/regions?id?{fake_region.id}")
+    assert res.status_code == 200
+    assert res.headers['Content-Type'] == 'application/json'
+    assert type(res.json['data']) == dict
+    assert res.json['data'] == {}
+    

@@ -12,6 +12,8 @@ services:
       - ./:/app
     env_file:
       - ./.env
+    environment:
+      - LOGGING_DIR="/var/log/region-service/region-service.log"
     ports:
       - "8000:8000"
     networks:

@@ -6,6 +6,8 @@ from webargs import fields, ValidationError
 class Region(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     description = db.Column(db.String(30), nullable=False, unique=True)
+    active = db.Column(db.Boolean(), nullable=False, default=True)
+
 
 
 class RegionSchema(ma.SQLAlchemyAutoSchema):

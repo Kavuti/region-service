@@ -11,4 +11,4 @@ FROM python-requirements
 ENV FLASK_APP=region_service
 COPY / /app
 WORKDIR /app
-CMD [ "gunicorn", "-w 4", "--bind=0.0.0.0", "wsgi:app" ]
+CMD [ "./start.sh"]
