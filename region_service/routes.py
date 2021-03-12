@@ -19,7 +19,6 @@ class RegionResource(Resource):
         worker = RegionWorker()
         return make_response(success(worker.get(**kwargs)))
 
-    
     @use_args(RegionSchema(), location="json")
     def post(self, *args):
         try:

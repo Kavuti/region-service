@@ -9,14 +9,15 @@ class Region(db.Model):
     active = db.Column(db.Boolean(), nullable=False, default=True)
 
 
-
 class RegionSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Region
         dump_only = ("id",)
         load_instance = True
 
+
 region_args = {
     "id": fields.Int(),
-    "description": fields.Str()
+    "description": fields.Str(),
+    "active": fields.Boolean()
 }

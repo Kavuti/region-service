@@ -20,7 +20,6 @@ from .routes import RegionResource
 
 def create_app(testing=False):
 
-    logger.info(f"Creating app with testing {testing}")
     app = Flask(__name__)
 
     # Config
@@ -29,10 +28,11 @@ def create_app(testing=False):
     else:
         app.config.from_object(Config())
 
+    logging.info(f"Creating app with testing {testing}")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Resoures
-    api.add_resource(RegionResource, '/regions')
+    api.add_resource(RegionResource, '/')
 
     # Init
     db.init_app(app)

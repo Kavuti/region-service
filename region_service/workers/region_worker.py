@@ -13,8 +13,11 @@ class RegionWorker:
             schema = RegionSchema()
             region = query.get(kwargs['id'])
             return schema.dump(region)
-        elif 'description' in kwargs:
-            query = query.filter(Region.description.ilike(f"%{kwargs['description']}%"))
+        else:
+            if 'description' in kwargs:
+                query = query.filter(Region.description.ilike(f"%{kwargs['description']}%"))
+            if 'active' in kwargs:
+                query = query.filter_by(active=kwargs['active'])
 
         schema = RegionSchema(many=True)
         return schema.dump(query.all())

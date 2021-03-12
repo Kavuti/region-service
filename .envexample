@@ -2,4 +2,5 @@ DATABASE_URI=postgres+psycopg2://postgres:postgres@db:5432/regions_db
 DATABASE_USER=postgres
 DATABASE_PASSWORD=postgres
 LOGGING_DIR=/var/log/region-service/region-service.log
+FLASK_ENV=production
 TESTING=False
