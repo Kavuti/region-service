@@ -16,7 +16,7 @@ migrate = Migrate(db=db)
 
 logger = logging.getLogger('root')
 
-from .routes import RegionResource
+from .routes import RegionResource, HealthcheckResource
 
 def create_app(testing=False):
 
@@ -33,6 +33,7 @@ def create_app(testing=False):
 
     # Resoures
     api.add_resource(RegionResource, '/')
+    api.add_resource(HealthcheckResource, '/health')
 
     # Init
     db.init_app(app)
