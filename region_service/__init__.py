@@ -21,7 +21,7 @@ from .routes import RegionResource, HealthcheckResource
 def create_app(testing=False):
 
     app = Flask(__name__)
-
+    print(testing)
     # Config
     if testing:
         app.config.from_object(TestConfig())
@@ -32,7 +32,7 @@ def create_app(testing=False):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Resoures
-    api.add_resource(RegionResource, '/')
+    api.add_resource(RegionResource, '/regions')
     api.add_resource(HealthcheckResource, '/health')
 
     # Init
@@ -58,7 +58,7 @@ def create_app(testing=False):
 
     @app.errorhandler(422)
     def handle_validation_error(e):
-        logger.error("Error during entity processing", e)
+        #logger.error("Error during entity processing", e)
         return make_response(fail("Some data is not valid"))
 
     return app
