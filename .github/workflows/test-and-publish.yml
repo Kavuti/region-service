@@ -40,7 +40,7 @@ jobs:
       - name: Docker Tag
         run: docker tag region-service ${{ secrets.DOCKERHUB_USER }}/region-service:${{ steps.vars.outputs.tag }}
       - name: Docker Push
-        run: docker push ${{ secreats.DOCKERHUB_USER }}/region-service
+        run: docker push ${{ secrets.DOCKERHUB_USER }}/region-service
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Image digest
