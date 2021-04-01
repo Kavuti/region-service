@@ -1,6 +1,6 @@
 FROM python:3.9.2-alpine3.12 as python-alpine
 RUN apk update && \
-    apk add postgresql-dev gcc python3-dev musl-dev
+    apk add postgresql-dev gcc g++ python3-dev musl-dev
 
 FROM python-alpine as python-requirements
 RUN mkdir /app && cd /var/log/ && mkdir region-service
