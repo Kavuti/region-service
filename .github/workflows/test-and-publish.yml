@@ -33,6 +33,7 @@ jobs:
       - name: Docker Login
         uses: docker/login-action@v1.8.0
         with:
+          username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           logout: true
       - name: Docker Build
