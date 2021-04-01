@@ -30,6 +30,8 @@ jobs:
       - name: Get tag name
         id: vars
         run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      - name: Checkout the code
+        uses: actions/checkout@v2.3.4
       - name: Docker Login
         uses: docker/login-action@v1.8.0
         with:
